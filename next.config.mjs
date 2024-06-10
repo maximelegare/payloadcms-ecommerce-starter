@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
-const ContentSecurityPolicy = require('./csp')
-const redirects = require('./redirects')
+import ContentSecurityPolicy from './csp.mjs'
+import redirects from './redirects.mjs'
+
+await import('./src/env.mjs')
 
 const nextConfig = {
   reactStrictMode: true,
@@ -47,4 +49,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+export default nextConfig
