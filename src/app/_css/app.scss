@@ -1,7 +1,10 @@
+@use "./tailwindcss.scss" as *;
 @use './queries.scss' as *;
 @use './colors.scss' as *;
 @use './type.scss' as *;
 @import "./theme.scss";
+
+
 
 :root {
   --base: 24px;
