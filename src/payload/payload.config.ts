@@ -86,6 +86,13 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
+  localization: {
+    locales: [
+    "fr", "en"
+    ],
+    defaultLocale: 'fr',
+    fallback:true
+  },
   graphQL: {
     schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
   },

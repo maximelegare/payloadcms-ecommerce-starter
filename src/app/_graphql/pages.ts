@@ -4,8 +4,8 @@ import { MEDIA } from './media'
 import { META } from './meta'
 
 export const PAGES = `
-  query Pages {
-    Pages(limit: 300, where: { slug: { not_equals: "cart" } })  {
+  query Pages  {
+    Pages(locale:en, fallbackLocale:en, limit: 300, where: { slug: { not_equals: "cart" } })  {
       docs {
         slug
       }
@@ -15,7 +15,7 @@ export const PAGES = `
 
 export const PAGE = `
   query Page($slug: String, $draft: Boolean) {
-    Pages(where: { AND: [{ slug: { equals: $slug }}] }, limit: 1, draft: $draft) {
+    Pages(locale:en, fallbackLocale:en, where: { AND: [{ slug: { equals: $slug }}] }, limit: 1, draft: $draft) {
       docs {
         id
         title
