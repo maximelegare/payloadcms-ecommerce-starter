@@ -10,7 +10,10 @@ import { Gutter } from '../Gutter'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
 
+import { useCurrentLocale } from 'next-i18n-router/client'
+
 import classes from './index.module.scss'
+import { i18nConfig } from '@@/i18nConfig'
 
 type Result = {
   docs: (Product | string)[]
@@ -75,6 +78,8 @@ export const CollectionArchive: React.FC<Props> = props => {
   const isRequesting = useRef(false)
   const [page, setPage] = useState(1)
 
+  const currentLocale = useCurrentLocale(i18nConfig)
+
   const categories = (catsFromProps || [])
     .map(cat => (typeof cat === 'object' ? cat?.id : cat))
     .join(',')
@@ -131,7 +136,7 @@ export const CollectionArchive: React.FC<Props> = props => {
       const makeRequest = async () => {
         try {
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/${relationTo}?${searchQuery}`,
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/${relationTo}?${searchQuery}&locale=${currentLocale}&fallback-locale=none`,
           )
 
           const json = await req.json()

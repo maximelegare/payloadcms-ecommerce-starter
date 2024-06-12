@@ -10,10 +10,12 @@ export const MediaBlock: Block = {
       name: 'position',
       type: 'select',
       defaultValue: 'default',
+      localized:true,
       options: [
         {
           label: 'Default',
           value: 'default',
+      
         },
         {
           label: 'Fullscreen',

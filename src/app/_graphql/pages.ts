@@ -16,7 +16,7 @@ query Pages  {
 
 export const PAGE = (locale: Locale) => `
 query Page($slug: String, $draft: Boolean) {
-  Pages(locale:${locale}, fallbackLocale:en, where: { AND: [{ slug: { equals: $slug }}] }, limit: 1, draft: $draft) {
+  Pages(locale:${locale}, where: { AND: [{ slug: { equals: $slug }}] }, limit: 1, draft: $draft) {
     docs {
       id
       title

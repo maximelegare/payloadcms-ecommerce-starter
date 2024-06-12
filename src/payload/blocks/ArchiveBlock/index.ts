@@ -12,6 +12,7 @@ export const Archive: Block = {
     richText({
       name: 'introContent',
       label: 'Intro Content',
+      localized:true
     }),
     {
       name: 'populateBy',

@@ -50,6 +50,8 @@ export const Card: React.FC<{
     className,
   } = props
 
+ 
+
   const { description, image: metaImage } = meta || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
