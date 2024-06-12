@@ -6,13 +6,19 @@ import { Footer } from '~/app/_components/Footer'
 import { Header } from '~/app/_components/Header'
 import { Providers } from '~/app/_providers'
 import { InitTheme } from '~/app/_providers/Theme/InitTheme'
-import { mergeOpenGraph } from '~/app/_utilities/mergeOpenGraph' 
+import { mergeOpenGraph } from '~/app/_utilities/mergeOpenGraph'
 
 import '~/app/_css/app.scss'
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+  params: { locale },
+}: {
+  children: React.ReactNode
+  params: { locale: string }
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <InitTheme />
         <link rel="icon" href="/favicon.ico" sizes="32x32" />

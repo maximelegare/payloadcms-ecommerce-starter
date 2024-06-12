@@ -29,6 +29,8 @@ import { Settings } from './globals/Settings'
 import { priceUpdated } from './stripe/webhooks/priceUpdated'
 import { productUpdated } from './stripe/webhooks/productUpdated'
 
+import {defaultLocale, locales} from "../_constants/locales"
+
 const generateTitle: GenerateTitle = () => {
   return 'My Store'
 }
@@ -87,10 +89,8 @@ export default buildConfig({
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
   localization: {
-    locales: [
-    "fr", "en"
-    ],
-    defaultLocale: 'fr',
+    locales:locales.map((l) => l.locale),
+    defaultLocale: defaultLocale,
     fallback:true
   },
   graphQL: {

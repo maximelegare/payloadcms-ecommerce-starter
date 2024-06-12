@@ -9,6 +9,7 @@ import { CartLink } from '../../CartLink'
 import { CMSLink } from '../../Link'
 
 import classes from './index.module.scss'
+import { LanguageChanger } from '~/app/_components/LanguageChanger'
 
 export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
   const navItems = header?.navItems || []
@@ -36,6 +37,7 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
           <Link href="/create-account">Create Account</Link>
         </React.Fragment>
       )}
+      <LanguageChanger />
     </nav>
   )
 }
