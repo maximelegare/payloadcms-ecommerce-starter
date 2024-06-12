@@ -3,20 +3,24 @@
 import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation'
 import { defaultLocale, locales } from '~/_constants/locales'
-import { ChangeEvent, useEffect } from 'react'
-import { useCurrentLocale } from 'next-i18n-router/client';
+import { useCurrentLocale } from 'next-i18n-router/client'
 import { i18nConfig } from '@@/i18nConfig'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../_SHADCN/Select/select'
 
 export const LanguageChanger = () => {
   const currentLocale = useCurrentLocale(i18nConfig)
-  
+
   const router = useRouter()
   const currentPathname = usePathname()
 
-
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const newLocale = e.target.value
-
+  const handleChange = (newLocale: string) => {
     // set cookie for next-i18n-router
     const days = 30
     const date = new Date()
@@ -34,12 +38,19 @@ export const LanguageChanger = () => {
   }
 
   return (
-    <select onChange={handleChange} value={currentLocale}>
-      {locales.map((l, idx) => (
-        <option key={idx} value={l.locale}>
-          {l.labels[currentLocale]}
-        </option>
-      ))}
-    </select>
+    <Select value={currentLocale} onValueChange={handleChange}>
+      <SelectTrigger className='w-[160px]'>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {locales.map(l => (
+            <SelectItem key={l.locale} value={l.locale}>
+              {l.labels[currentLocale]}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
 }
