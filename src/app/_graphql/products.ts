@@ -1,10 +1,11 @@
 import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks'
 import { CATEGORIES } from './categories'
 import { META } from './meta'
+import { Locale } from '@@/i18nConfig'
 
-export const PRODUCTS = `
+export const PRODUCTS = (locale:Locale) => `
   query Products {
-    Products(locale:en, fallbackLocale:en, limit: 300) {
+    Products(locale:${locale}, fallbackLocale:en, limit: 300) {
       docs {
         slug
       }
@@ -12,9 +13,9 @@ export const PRODUCTS = `
   }
 `
 
-export const PRODUCT = `
+export const PRODUCT = (locale:Locale) => `
   query Product( $slug: String, $draft: Boolean) {
-    Products(locale:en, fallbackLocale:en, where: { slug: { equals: $slug}}, limit: 1, draft: $draft) {
+    Products(locale:${locale}, fallbackLocale:en, where: { slug: { equals: $slug}}, limit: 1, draft: $draft) {
       docs {
         id
         title

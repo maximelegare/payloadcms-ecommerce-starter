@@ -6,6 +6,7 @@ import { PAGES } from '../_graphql/pages'
 import { PRODUCTS } from '../_graphql/products'
 import { GRAPHQL_API_URL } from './shared'
 import { payloadToken } from './token'
+import { Locale } from '@@/i18nConfig'
 
 const queryMap = {
   pages: {
@@ -24,6 +25,7 @@ const queryMap = {
 
 export const fetchDocs = async <T>(
   collection: keyof Config['collections'],
+  locale:Locale,
   draft?: boolean,
 ): Promise<T[]> => {
   if (!queryMap[collection]) throw new Error(`Collection ${collection} not found`)
@@ -44,7 +46,7 @@ export const fetchDocs = async <T>(
     cache: 'no-store',
     next: { tags: [collection] },
     body: JSON.stringify({
-      query: queryMap[collection].query,
+      query: queryMap[collection].query(locale),
     }),
   })
     ?.then(res => res.json())

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+
 import { Page, Settings } from '../../../../payload/payload-types'
 import { staticCart } from '../../../../payload/seed/cart-static'
 import { fetchDoc } from '../../../_api/fetchDoc'
@@ -19,12 +20,13 @@ import classes from './index.module.scss'
 // See the note in '../[slug]/page.tsx' about this
 export const dynamic = 'force-dynamic'
 
-export default async function Cart() {
+export default async function Cart({params:{locale}}) {
   let page: Page | null = null
 
   try {
     page = await fetchDoc<Page>({
       collection: 'pages',
+      locale,
       slug: 'cart',
     })
   } catch (error) {
@@ -95,12 +97,13 @@ export default async function Cart() {
   )
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({params:{locale}}): Promise<Metadata> {
   let page: Page | null = null
 
   try {
     page = await fetchDoc<Page>({
       collection: 'pages',
+      locale,
       slug: 'cart',
     })
   } catch (error) {

@@ -19,7 +19,7 @@ import { generateMeta } from '../../../_utilities/generateMeta'
 // If you are not using Payload Cloud then this line can be removed, see `../../../README.md#cache`
 export const dynamic = 'force-dynamic'
 
-export default async function Page({ params: { slug = 'home' } }) {
+export default async function Page({ params: { slug = 'home', locale } }) {
   const { isEnabled: isDraftMode } = draftMode()
 
   let page: Page | null = null
@@ -27,6 +27,7 @@ export default async function Page({ params: { slug = 'home' } }) {
   try {
     page = await fetchDoc<Page>({
       collection: 'pages',
+      locale,
       slug,
       draft: isDraftMode,
     })
@@ -61,16 +62,16 @@ export default async function Page({ params: { slug = 'home' } }) {
   )
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams({params: { locale }}) {
   try {
-    const pages = await fetchDocs<Page>('pages')
+    const pages = await fetchDocs<Page>('pages', locale)
     return pages?.map(({ slug }) => slug)
   } catch (error) {
     return []
   }
 }
 
-export async function generateMetadata({ params: { slug = 'home' } }): Promise<Metadata> {
+export async function generateMetadata({ params: { slug = 'home', locale } }): Promise<Metadata> {
   const { isEnabled: isDraftMode } = draftMode()
 
   let page: Page | null = null
@@ -78,6 +79,7 @@ export async function generateMetadata({ params: { slug = 'home' } }): Promise<M
   try {
     page = await fetchDoc<Page>({
       collection: 'pages',
+      locale,
       slug,
       draft: isDraftMode,
     })
