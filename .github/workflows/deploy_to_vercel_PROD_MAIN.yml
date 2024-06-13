@@ -1,0 +1,23 @@
+name: Deploy to vercel in PROD MAIN
+env:
+  VERCEL_ORG_ID: ${{secrets.VERCEL_ORGID_STABLE}}
+  VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECTID_STABLE}}
+on:
+  workflow_dispatch:
+  # push: 
+  #   branches:
+  #     - main
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    if: ${{github.ref == 'refs/heads/PARTAGO_STABLE'}}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel environment informations
+        run: vercel pull --yes --environment=production --token=${{secrets.VERCEL_TOKEN}}
+      - name: Build project
+        run: vercel build --prod --token=${{secrets.VERCEL_TOKEN}}
+      - name: Deploy project to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{secrets.VERCEL_TOKEN}} 

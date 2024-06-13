@@ -1,0 +1,99 @@
+name: Deploy to vercel in PROD DEV
+env:
+  VERCEL_ORG_ID: ${{secrets.VERCEL_ORGID_DEV}}
+  VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECTID_DEV}}
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - dev
+permissions:
+  contents: write
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{steps.read_version.outputs.version}}
+    if: ${{github.ref == 'refs/heads/main'}}
+    steps:
+      - uses: actions/checkout@v3
+      # - uses: actions/checkout@v2
+      - name: Use Node.js 20.8.1
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.8.1
+      - run: npm ci
+      - name: Get next version
+        id: read_version
+        run: echo "version=$(npm run semantic-release --dry-run  | grep -oP 'Published release \K.*? ' | sed 's/[[:space:]]*$//')" >> $GITHUB_OUTPUT
+
+        
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          GH_TOKEN: ${{secrets.GH_SEMANTIC_TOKEN}}
+
+      - name: Update Version
+        if: ${{ steps.read_version.outputs.version }}
+        run: npm version ${{ steps.read_version.outputs.version }} --no-git-tag-version --allow-same-version
+        env:
+          credentials: ${{secrets.GH_SEMANTIC_TOKEN}}
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel environment informations
+        run: vercel pull --yes --environment=production --token=${{secrets.VERCEL_TOKEN}}
+      - name: Build project
+        run: vercel build --prod --token=${{secrets.VERCEL_TOKEN}}
+      - name: Deploy project to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{secrets.VERCEL_TOKEN}}
+  release:
+    runs-on: ubuntu-latest
+    needs: build_and_deploy
+    if: |
+      always() && 
+      (needs.build_and_deploy.result == 'success')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 20.8.1
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.8.1
+      - run: npm ci
+      - run: npm run semantic-release
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          GH_TOKEN: ${{secrets.GH_SEMANTIC_TOKEN}}
+          update_db_version:
+          runs-on: ubuntu-latest
+
+  update_db_app_version:
+    runs-on: ubuntu-latest
+    needs: [release, build_and_deploy]
+    # outputs:
+    #   app_version: ${{steps.extract_version.outputs.app_version}}
+    if: |
+      always() && 
+      (needs.release.result == 'success') &&
+      (needs.build_and_deploy.outputs.version != '')
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_URL: ${{ secrets.PG_NEON_URL_DEV }}
+          POSTGRES_PASSWORD: ${{secrets.PG_NEON_DB_SUPERUSER_PASSWORD_DEV}}
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install jq -y
+
+      - name: Update database with app version using URL
+        env:
+          POSTGRES_URL: ${{ secrets.PG_NEON_URL_DEV }}
+          APP_VERSION: ${{ needs.build_and_deploy.outputs.version }}
+        run: |
+          psql $POSTGRES_URL -c "UPDATE public_data SET version = '$APP_VERSION' WHERE (name = 'PARTAGO_DEV') OR (name = 'LOCALHOST');"
