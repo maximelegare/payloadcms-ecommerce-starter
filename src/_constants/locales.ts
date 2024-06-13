@@ -1,6 +1,6 @@
 const locales = [
-  { locale: 'fr', labels: { fr: 'Français', en: 'French' } },
-  { locale: 'en', labels: { fr: 'Anglais', en: 'English' } },
+  { locale: 'fr', labels: { fr: 'Français', en: 'French' }, flag:"🇫🇷" },
+  { locale: 'en', labels: { fr: 'Anglais', en: 'English' }, flag:"🇬🇧"},
 ]
 
 const defaultLocale = 'fr'

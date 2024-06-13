@@ -39,14 +39,14 @@ export const LanguageChanger = () => {
 
   return (
     <Select value={currentLocale} onValueChange={handleChange}>
-      <SelectTrigger className='w-[160px]'>
+      <SelectTrigger className='w-16'>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           {locales.map(l => (
             <SelectItem key={l.locale} value={l.locale}>
-              {l.labels[currentLocale]}
+              {l.flag}
             </SelectItem>
           ))}
         </SelectGroup>
